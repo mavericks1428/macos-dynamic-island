@@ -8,8 +8,8 @@ on:
 
 jobs:
   build:
-    name: Compile on macOS 12
-    runs-on: macos-12
+    name: Compile (targets macOS 12)
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
 
@@ -18,9 +18,18 @@ jobs:
 
       - name: Compile (debug)
         run: swift build -v
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "12.0"
 
       - name: Assemble AirIsland.app
         run: ./build.sh app
+
+      - name: Verify the binary really targets macOS 12
+        run: |
+          file AirIsland.app/Contents/MacOS/AirIsland
+          otool -l AirIsland.app/Contents/MacOS/AirIsland \
+            | grep -A4 LC_BUILD_VERSION \
+            | grep minos
 
       - name: Verify the bundle and ad-hoc signature
         run: |
