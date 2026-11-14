@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Compile on macOS 12
+    runs-on: macos-12
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Swift version
+        run: swift --version
+
+      - name: Compile (debug)
+        run: swift build -v
+
+      - name: Assemble AirIsland.app
+        run: ./build.sh app
+
+      - name: Verify the bundle and ad-hoc signature
+        run: |
+          test -x AirIsland.app/Contents/MacOS/AirIsland
+          plutil -lint AirIsland.app/Contents/Info.plist
+          codesign --verify --verbose AirIsland.app
+          echo "Bundle OK: $(du -sh AirIsland.app | cut -f1)"
+
+      - name: Upload the built app (downloadable artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: AirIsland-app
+          path: AirIsland.app
+          if-no-files-found: error
