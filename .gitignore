@@ -1,0 +1,31 @@
+# Build output
+.build/
+build/
+dist/
+out/
+*.app
+*.dmg
+DerivedData/
+AppIcon.iconset/
+
+# Xcode
+*.xcuserstate
+xcuserdata/
+*.xcodeproj/xcshareddata/IDEWorkspaceChecks.plist
+.swiftpm/
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
+
+# Local overrides — never commit your own username/paths here
+.env
+*.local
